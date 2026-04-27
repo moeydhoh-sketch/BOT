@@ -19,6 +19,10 @@ bot = commands.Bot(command_prefix='-', intents=intents, help_command=None)
 
 # إعداد قاعدة البيانات (SQLite)
 def setup_db():
+    # التحقق من وجود مجلد data وإنشائه إذا لم يكن موجوداً
+    if not os.path.exists('data'):
+        os.makedirs('data')
+        
     conn = sqlite3.connect('data/bot.db')
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS economy (user_id INTEGER PRIMARY KEY, balance INTEGER DEFAULT 10000)''')
@@ -131,10 +135,10 @@ async def load_cogs():
 async def main():
     async with bot:
         await load_cogs()
-        # قراءة التوكن من البيئة السرية (لن يعمل محلياً إلا إذا وضعته في ملف .env)
+        # قراءة التوكن من البيئة السرية
         TOKEN = os.getenv("TOKEN")
         if TOKEN is None:
-            print("❌ خطأ: التوكن غير موجود! تأكد من وضعه في متغيرات البيئة (Environment Variables)")
+            print("❌ خطأ: التوكن غير موجود! تأكد من وضعه في متغيرات البيئة (Environment Variables) في موقع Render")
             return
         await bot.start(TOKEN)
 
